@@ -1,4 +1,9 @@
-import "./globals.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './globals.css';          
+
+
+
+
 import Providers from "@/providers/RootProviders";
 import { defaultSEO } from "@/config/seoConfig";
 import { Toaster } from "sonner";
@@ -11,6 +16,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* Local Bootstrap CSS */}
+        <link rel="stylesheet" href="/bootstrap.min.css" />
+      </head>
       <body>
         <Toaster />
         <Providers>{children}</Providers>
