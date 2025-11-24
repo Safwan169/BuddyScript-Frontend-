@@ -1,8 +1,8 @@
 // src/components/ui/Toast.tsx
-import { ToastProps } from "@/types/Toast";
+// import { ToastProps } from "@/types/Toast";
 import { toast } from "sonner";
 
-export const showCustomToast = (data: ToastProps) => {
+export const showCustomToast = (data: any) => {
   const id = toast(
     <div className="flex justify-between border w-full border-red-700 items-start">
       <div>

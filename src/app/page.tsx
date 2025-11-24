@@ -1,16 +1,25 @@
+import LeftSideBar from "@/components/Feed/LeftSideBar"
+import MiddleLayout from "@/components/Feed/MiddleLayout";
+import RightSideBar from "@/components/Feed/RightSideBar";
+
 export default function HomePage() {
 
 
 
   return (
-    <main className="p-6">
-      <h1 className="text-2xl bg-white font-bold">Next.js Boilerplate</h1>
-      <section className="mt-6">
-        <h2 className="text-xl">RTK Query - Profile</h2>
 
-      </section>
-    
-    
-    </main>
+    <div className="container _custom_container ">
+      <div className="_layout_inner_wrap">
+        <div className="row">
+
+          <LeftSideBar/>
+
+       <MiddleLayout/>
+
+          <RightSideBar/>
+        </div>
+
+      </div>
+    </div>
   );
 }

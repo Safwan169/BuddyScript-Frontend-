@@ -1,16 +1,18 @@
-import z from "zod";
+import * as z from 'zod'; 
 
-export const register=z.object({
- name: z.string().min(2, "Name must be at least 2 characters"),
- email: z.string().email("Invalid email"),
- password: z.string().min(6, "Password must be at least 6 characters"),
- confirmPassword: z.string().min(6, "Confirm Password must be at least 6 characters")
-}).refine((data) => data.password === data.confirmPassword, {
- message: "Passwords do not match",
- path: ["confirmPassword"]
-}).refine((data) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/.test(data.password), {
-  message: "Password must include uppercase, lowercase, number & special character",
-  path: ["password"], 
+const registrationSchema = z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z.string().email('Must be a valid email').min(1, 'Email is required'),
+    password: z.string()
+        .min(6, 'Password must be at least 6 characters')
+        .min(1, 'Password is required'),
+    repeatPassword: z.string().min(1, 'Repeat password is required'),
+    terms: z.boolean().refine(val => val === true, 'You must accept the terms and conditions'),
+}).refine((data) => data.password === data.repeatPassword, { // 4. Define cross-field refinement
+    message: 'Passwords must match',
+    path: ['repeatPassword'], // Attach the error to the repeatPassword field
 });
 
-export type RegisterFormData = z.infer<typeof register>;
+export type IFormInput = z.infer<typeof registrationSchema>;
+export { registrationSchema };
