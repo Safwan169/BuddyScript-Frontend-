@@ -1,32 +1,45 @@
 // src/features/user/userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { userApi } from "./userApi";
 
 interface UserState {
-  id?: string;
-  name?: string;
-  email?: string;
-  token?: string | null;
+  token: string | null;
+  user: any | null; // Replace 'any' with your user type
+  isAuthenticated: boolean;
 }
 
 const initialState: UserState = {
-  id: undefined,
-  name: undefined,
-  email: undefined,
-  token: null
+  token: null,
+  user: null,
+  isAuthenticated: false,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<Partial<UserState>>) {
-      return { ...state, ...action.payload };
+    setCredentials: (state, action: PayloadAction<{ token: string; user: any }>) => {
+      state.token = action.payload.token;
+      state.user = action.payload.user;
+      state.isAuthenticated = true;
     },
-    clearUser() {
-      return initialState;
-    }
-  }
+    logout: (state) => {
+      state.token = null;
+      state.user = null;
+      state.isAuthenticated = false;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      userApi.endpoints.login.matchFulfilled,
+      (state, action) => {
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+      }
+    );
+  },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setCredentials, logout } = userSlice.actions;
 export default userSlice.reducer;

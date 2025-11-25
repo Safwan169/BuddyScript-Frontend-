@@ -6,6 +6,8 @@ import { IFormInput, LoginSchema } from '@/schemas/login.schema';
 import { useLoginMutation } from '@/features/user/userApi';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '@/features/user/userSlice';
 
 
 const LoginPage = () => {
@@ -20,24 +22,28 @@ const LoginPage = () => {
             rememberMe: true,
         },
     });
-    const [loginUser] = useLoginMutation();
+
     const navigate = useRouter();
+    const dispatch = useDispatch();
+    const [login] = useLoginMutation();
 
     const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-
         try {
-            const res = await loginUser(data).unwrap();
+            const res = await login(data).unwrap();
             if (res.success === true) {
-                toast(`Login successful`);
-                navigate.push('/');
+                console.log('Login successful', res);
 
+                dispatch(setCredentials({
+                    token: res.token,
+                    user: res.user
+                }));
+
+                toast.success('Login successful');
+                navigate.push('/');
                 reset();
             }
-
         } catch (error: unknown) {
-
             if (typeof error === 'object' && error !== null && 'data' in error) {
-
                 const apiError = error as { data?: { message: string } };
                 if (apiError.data?.message) {
                     toast.error(apiError.data.message);
@@ -46,11 +52,7 @@ const LoginPage = () => {
                 toast.error("A generic error occurred.");
             }
         }
-
-
     };
-
-
     return (
         <section className='_social_login_wrapper _layout_main_wrapper'>
             <div className='_shape_one'>
